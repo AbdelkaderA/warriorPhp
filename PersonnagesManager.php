@@ -1,4 +1,5 @@
 <?php
+
 class PersonnagesManager
 {
     private $_db; // Instance de PDO
@@ -48,8 +49,8 @@ class PersonnagesManager
         }
 
         // Sinon, c'est qu'on veut vérifier que le nom existe ou pas.
-
-        $q = $this->_db->prepare('SELECT COUNT(*) FROM personnages WHERE nom = :nom');
+        // $q = $this->_db->execute("SELECT COUNT(*) FROM personnages WHERE nom = '$info' ");
+        $q = $this->_db->prepare("SELECT COUNT(*) FROM personnages WHERE nom = :nom ");
         $q->execute([':nom' => $info]);
 
         return (bool) $q->fetchColumn();
@@ -57,12 +58,10 @@ class PersonnagesManager
 
     public function get($info)
     {
-        // Retourne la liste des personnages dont le nom n'est pas $nom.
-        // Le résultat sera un tableau d'instances de Personnage.
+       
         if (is_int($info)) {
             $q = $this->_db->query('SELECT id, nom, degats FROM personnages WHERE id = ' . $info);
             $donnees = $q->fetch(PDO::FETCH_ASSOC);
-
             return new Personnage($donnees);
         } else {
             $q = $this->_db->prepare('SELECT id, nom, degats FROM personnages WHERE nom = :nom');
